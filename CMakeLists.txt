@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 4.4.2)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 project(
     slang-module
     VERSION      0.1.0
@@ -9,19 +11,7 @@ project(
     LANGUAGES    NONE
 )
 
-macro(slang_module_set_option VAR DEFAULT TYPE HELP)
-    if(NOT DEFINED ${VAR})
-        set(${VAR} ${DEFAULT})
-    endif()
-    set(
-        CACHE{${VAR}}
-        TYPE  ${TYPE}
-        HELP  ${HELP}
-        FORCE
-        VALUE ${${VAR}}
-    )
-endmacro()
-
+include(SlangModuleSetOption)
 slang_module_set_option(SLANG_MODULE_SOURCES "" STRING "Slang source files to compile")
 
 find_program(
@@ -36,14 +26,13 @@ foreach(SLANG_MODULE_SOURCE IN LISTS SLANG_MODULE_SOURCES)
     cmake_path(
         ABSOLUTE_PATH
         SLANG_MODULE_SOURCE
-        BASE_DIRECTORY ${CMAKE_SOURCE_DIR}
+        BASE_DIRECTORY  ${CMAKE_SOURCE_DIR}
         NORMALIZE
         OUTPUT_VARIABLE SLANG_MODULE_SOURCE_ABSOLUTE_PATH
     )
     cmake_path(GET SLANG_MODULE_SOURCE_ABSOLUTE_PATH STEM SLANG_MODULE_SOURCE_STEM)
 
-    set(SPIRV_OUTPUT "shaders")
-    cmake_path(APPEND SPIRV_OUTPUT "${SLANG_MODULE_SOURCE_STEM}.spv")
+    set(SPIRV_OUTPUT "shaders/${SLANG_MODULE_SOURCE_STEM}.spv")
 
     add_custom_command(
         OUTPUT ${SPIRV_OUTPUT}
