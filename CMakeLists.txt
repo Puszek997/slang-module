@@ -24,7 +24,12 @@ endmacro()
 
 slang_module_set_option(SLANG_MODULE_SOURCES "" STRING "Slang source files to compile")
 
-find_program(SLANGC_EXECUTABLE slangc REQUIRED)
+find_program(
+    SLANGC_EXECUTABLE
+    slangc
+    DOC "Slang compiler"
+    REQUIRED
+)
 
 set(SPIRV_OUTPUTS "")
 foreach(SLANG_MODULE_SOURCE IN LISTS SLANG_MODULE_SOURCES)
